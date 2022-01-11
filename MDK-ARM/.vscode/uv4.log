@@ -1,0 +1,9 @@
+Build target 'Suspension'
+compiling pid.c...
+USER\Src\pid.c(21): warning:  #223-D: function "abs" declared implicitly
+        if(abs(pid->error) > 200){
+USER\Src\pid.c: 1 warning, 0 errors
+linking...
+Program Size: Code=21694 RO-data=934 RW-data=48 ZI-data=2624  
+FromELF: creating hex file...
+"Suspension\Suspension.axf" - 0 Error(s), 1 Warning(s).

@@ -1,0 +1,10 @@
+{
+    "files.associations": {
+        "pid.h": "c",
+        "iosfwd": "c",
+        "math.h": "c",
+        "atomic": "c",
+        "cstdint": "c",
+        "type_traits": "c"
+    }
+}
