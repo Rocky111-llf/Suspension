@@ -14,14 +14,8 @@
 #define IN2(state) HAL_GPIO_WritePin(GPIOA,GPIO_PIN_3,(GPIO_PinState)(state))    //M2
 #define IN3(state) HAL_GPIO_WritePin(GPIOA,GPIO_PIN_4,(GPIO_PinState)(state))    //M3
 #define IN4(state) HAL_GPIO_WritePin(GPIOA,GPIO_PIN_5,(GPIO_PinState)(state))    //M4
-
-typedef struct _AnglePID
-{
-	PID inner;
-	PID outer;
-	uint32_t output;
-
-}AnglePID;
+#define POINT_SPACING 30   //直线运动时到目标中间点的个数
+#define METER_CYCLE 0.158     //电机一转对应的米数 
 
 typedef struct _Motor
 {
@@ -34,15 +28,26 @@ typedef struct _Motor
 	AnglePID pid;                 //添加电机对应PID
 }Motor;
 
-
+typedef struct _Line
+{
+	uint32_t x;
+	uint32_t y;
+	uint32_t line_left;
+	uint32_t line_right;
+	uint32_t line_dl;
+	uint32_t line_dr;
+}Line;
 
 
 
 extern Motor motor1;
 extern Motor motor2;
+extern Line line;
 
-void Motor_Init(void);
-void Motor_Send(void);
+void Motor_Init(uint32_t x, uint32_t y, uint32_t le, uint32_t ri);
+uint8_t Motor_Send(void);
+void Speed_Tset(void);
+uint8_t Line_Control(uint32_t x, uint32_t y);
 
 
 #endif

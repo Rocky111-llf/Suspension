@@ -1,7 +1,7 @@
 #include "pid.h" 
 #include "math.h"
-#include "motor.h"
 
+extern double abs(double __x);
 //PID初始化函数
 void PID_Init(PID *pid,float p,float i,float d,float maxI,float maxOut)
 {

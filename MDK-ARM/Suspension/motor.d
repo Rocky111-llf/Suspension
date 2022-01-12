@@ -37,3 +37,4 @@ suspension\motor.o: ../Core/Inc/tim.h
 suspension\motor.o: .\USER\Inc\uartPack.h
 suspension\motor.o: ../Core/Inc/usart.h
 suspension\motor.o: E:\MDK5\ARM\ARMCC\Bin\..\include\stdio.h
+suspension\motor.o: E:\MDK5\ARM\ARMCC\Bin\..\include\math.h

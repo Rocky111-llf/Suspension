@@ -99,20 +99,24 @@ int main(void)
   /* USER CODE BEGIN 2 */
   PWM_Encoder_Start();
   Enable_Uart_O_Control(&huart1,&uart_1);
-  Motor_Init();
-  PID_Init(&motor1.pid,0.2,0.015,0.2,100,10000);
-  PID_Init(&motor2.pid,0.2,0.015,0.2,100,10000);
+  Motor_Init(0, 0, 1.1597, 1.4916);
+  PID_Init(&motor1.pid.inner,0.6,0.001,0.2,100,10000);
+  PID_Init(&motor1.pid.outer,0.2,0.015,0.2,100,10000);
+  PID_Init(&motor2.pid.inner,0.2,0.015,0.2,100,10000);
+  PID_Init(&motor2.pid.outer,0.2,0.015,0.2,100,10000);
   printf("...");
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  //Line_Control(0.5, 0.5);
   while (1)
   {
     /* USER CODE END WHILE */
     sys_now_clock = HAL_GetTick();
-    if((sys_now_clock - sys_old_clock) >= 50){//50ms执行一次PID运算
-      Motor_Send();
+    if(sys_now_clock - sys_old_clock >= 20){
+      Speed_Tset();
+      sys_old_clock = HAL_GetTick();
     }
     /* USER CODE BEGIN 3 */
   }
@@ -164,7 +168,15 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
-
+void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart){
+  if(huart->Instance == USART1){
+  }
+}
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
+  if(huart->Instance == USART1){
+    Uart_O_Data_Process(&huart1,&uart_1);
+  }
+}
 /* USER CODE END 4 */
 
 /**
