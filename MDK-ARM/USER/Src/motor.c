@@ -86,14 +86,14 @@ void Speed_Tset(void){
 	if(motor1.pid.inner.output > 0)        //对应正转
 	{
 		__HAL_TIM_SetCompare(&htim8, TIM_CHANNEL_1, (uint32_t)motor1.pid.inner.output);
-		IN1(0);
-		IN2(1);
+		IN1(1);
+		IN2(0);
 	}
 	else				  //对应反转					
 	{
 		__HAL_TIM_SetCompare(&htim8, TIM_CHANNEL_1, (uint32_t)(-motor1.pid.inner.output));
-		IN1(1);
-		IN2(0);
+		IN1(0);
+		IN2(1);
 	}
 }
 uint8_t Motor_Send(void)

@@ -19,7 +19,7 @@ void PID_SingleCalc(PID *pid,float reference,float feedback)
 	pid->error = reference-feedback;                          //更新当前误差
     //下面分别是P，I，D的计算
     pid->output = pid->error*pid->kp;                        //P为根据当前误差计算输出量
-	if(abs(pid->error) > 200){
+	if(abs(pid->error) > 200.0){
 		inl_index = 0;
 	}else{
 		inl_index = 1;
