@@ -35,6 +35,10 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 	static float tspeed=0;
 	static float ki=0;
 	static float kd=0;
+	static float kp2=0;
+	static float tspeed2=0;
+	static float ki2=0;
+	static float kd2=0;
 	if(htim->Instance==htim13.Instance)		              //20ms中断
 	{
 		Uart_O_Timeout_Check(&huart1,&uart_1);
@@ -47,28 +51,40 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
         //motor.totalAngle - motor.lastAngle为当前10ms内的增量，即脉冲数
 		motor1.speed = (float)(motor1.totalAngle - motor1.lastAngle)/(4*13*RR)*3000;
 		motor2.speed = (float)(motor2.totalAngle - motor2.lastAngle)/(4*13*RR)*3000;
-		// printf("speed1:%f\r\n",motor1.speed);//发送速度给串口
-		printf("speed2:%f\r\n",motor2.speed);//发送速度给串口			
+		printf("speed1:%f\r\n",motor1.speed);//发送速度给串口
+		// printf("speed2:%f\r\n",motor2.speed);//发送速度给串口			
 		motor1.lastAngle = motor1.totalAngle;              //更新转过的圈数
 		motor2.lastAngle = motor2.totalAngle;
 		if(uart_1.rxSaveFlag){
 			uart_1.rxSaveFlag=0;
 			if(sscanf((char*)uart_1.rxSaveBuf,"kp:%f",&kp)==1){
 				printf("!kp:%f\r\n",kp);
-				// motor1.pid.inner.kp = kp;
-				motor2.pid.inner.kp = kp;
+				motor1.pid.inner.kp = kp;
+				// motor2.pid.inner.kp = kp;
 			}else if(sscanf((char*)uart_1.rxSaveBuf,"tspeed:%f",&tspeed)==1){
 				printf("!tspeed:%f\r\n",tspeed);
-				// motor1.targetSpeed = tspeed;
-				motor2.targetSpeed = tspeed;
+				motor1.targetSpeed = tspeed;
+				// motor2.targetSpeed = tspeed;
 			}else if(sscanf((char*)uart_1.rxSaveBuf,"ki:%f",&ki)==1){
 				printf("!ki:%f\r\n",ki);
-				// motor1.pid.inner.ki = ki;
-				motor2.pid.inner.ki = ki;
+				motor1.pid.inner.ki = ki;
+				// motor2.pid.inner.ki = ki;
 			}else if(sscanf((char*)uart_1.rxSaveBuf,"kd:%f",&kd)==1){
 				printf("!kd:%f\r\n",kd);
-				// motor1.pid.inner.kd = kd;
-				motor2.pid.inner.kd = kd;
+				motor1.pid.inner.kd = kd;
+				// motor2.pid.inner.kd = kd;
+			}else if(sscanf((char*)uart_1.rxSaveBuf,"kp2:%f",&kp2)==1){
+				printf("!kp2:%f\r\n",kp2);
+				motor2.pid.inner.kp = kp2;
+			}else if(sscanf((char*)uart_1.rxSaveBuf,"ki2:%f",&ki2)==1){
+				printf("!ki2:%f\r\n",ki2);
+				motor2.pid.inner.ki = ki2;
+			}else if(sscanf((char*)uart_1.rxSaveBuf,"kd2:%f",&kd2)==1){
+				printf("!kd2:%f\r\n",kd2);
+				motor2.pid.inner.kd = kd2;
+			}else if(sscanf((char*)uart_1.rxSaveBuf,"tspeed2:%f",&tspeed2)==1){
+				printf("!tspeed2:%f\r\n",tspeed2);
+				motor2.targetSpeed = tspeed2;
 			}
 		}
 		
@@ -103,7 +119,7 @@ void Speed_Tset1(void){//调电机1速度PID
 }
 void Speed_Tset2(void){//调电机2速度PID
 	PID_SingleCalc(&motor2.pid.inner, motor2.targetSpeed, motor2.speed);
-	if(motor2.pid.inner.output > 0)        //对应正转
+	if(motor2.pid.inner.output > 0*1.0)        //对应正转
 	{
 		__HAL_TIM_SetCompare(&htim8, TIM_CHANNEL_2, (uint32_t)motor2.pid.inner.output);
 		IN3(0);

@@ -114,7 +114,8 @@ int main(void)
   {
     /* USER CODE END WHILE */
     sys_now_clock = HAL_GetTick();
-    if(sys_now_clock - sys_old_clock >= 50){
+    if(sys_now_clock - sys_old_clock >= 40){
+      Speed_Tset1();
       Speed_Tset2();
       sys_old_clock = HAL_GetTick();
     }
