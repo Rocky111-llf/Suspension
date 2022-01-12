@@ -46,7 +46,8 @@ extern Line line;
 
 void Motor_Init(uint32_t x, uint32_t y, uint32_t le, uint32_t ri);
 uint8_t Motor_Send(void);
-void Speed_Tset(void);
+void Speed_Tset1(void);
+void Speed_Tset2(void);
 uint8_t Line_Control(uint32_t x, uint32_t y);
 
 

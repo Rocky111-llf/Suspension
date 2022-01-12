@@ -47,23 +47,28 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
         //motor.totalAngle - motor.lastAngle为当前10ms内的增量，即脉冲数
 		motor1.speed = (float)(motor1.totalAngle - motor1.lastAngle)/(4*13*RR)*3000;
 		motor2.speed = (float)(motor2.totalAngle - motor2.lastAngle)/(4*13*RR)*3000;
-		printf("speed1:%f\r\n",motor1.speed);//发送速度给串口			
+		// printf("speed1:%f\r\n",motor1.speed);//发送速度给串口
+		printf("speed2:%f\r\n",motor2.speed);//发送速度给串口			
 		motor1.lastAngle = motor1.totalAngle;              //更新转过的圈数
 		motor2.lastAngle = motor2.totalAngle;
 		if(uart_1.rxSaveFlag){
 			uart_1.rxSaveFlag=0;
 			if(sscanf((char*)uart_1.rxSaveBuf,"kp:%f",&kp)==1){
 				printf("!kp:%f\r\n",kp);
-				motor1.pid.inner.kp = kp;
+				// motor1.pid.inner.kp = kp;
+				motor2.pid.inner.kp = kp;
 			}else if(sscanf((char*)uart_1.rxSaveBuf,"tspeed:%f",&tspeed)==1){
 				printf("!tspeed:%f\r\n",tspeed);
-				motor1.targetSpeed = tspeed;
+				// motor1.targetSpeed = tspeed;
+				motor2.targetSpeed = tspeed;
 			}else if(sscanf((char*)uart_1.rxSaveBuf,"ki:%f",&ki)==1){
 				printf("!ki:%f\r\n",ki);
-				motor1.pid.inner.ki = ki;
+				// motor1.pid.inner.ki = ki;
+				motor2.pid.inner.ki = ki;
 			}else if(sscanf((char*)uart_1.rxSaveBuf,"kd:%f",&kd)==1){
 				printf("!kd:%f\r\n",kd);
-				motor1.pid.inner.kd = kd;
+				// motor1.pid.inner.kd = kd;
+				motor2.pid.inner.kd = kd;
 			}
 		}
 		
@@ -81,7 +86,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 		__HAL_TIM_SetCounter(&htim3, 30000);             //重新设定初始值		
 	}
 }
-void Speed_Tset(void){
+void Speed_Tset1(void){//调电机1速度PID
 	PID_SingleCalc(&motor1.pid.inner, motor1.targetSpeed, motor1.speed);
 	if(motor1.pid.inner.output > 0)        //对应正转
 	{
@@ -96,6 +101,21 @@ void Speed_Tset(void){
 		IN2(1);
 	}
 }
+void Speed_Tset2(void){//调电机2速度PID
+	PID_SingleCalc(&motor2.pid.inner, motor2.targetSpeed, motor2.speed);
+	if(motor2.pid.inner.output > 0)        //对应正转
+	{
+		__HAL_TIM_SetCompare(&htim8, TIM_CHANNEL_2, (uint32_t)motor2.pid.inner.output);
+		IN3(0);
+		IN4(1);
+	}
+	else				  //对应反转					
+	{
+		__HAL_TIM_SetCompare(&htim8, TIM_CHANNEL_2, (uint32_t)(-motor2.pid.inner.output));
+		IN3(1);
+		IN4(0);
+	}
+}
 uint8_t Motor_Send(void)
 {
 	static uint32_t output1 = 0;
@@ -108,14 +128,14 @@ uint8_t Motor_Send(void)
 	if(output1 > 0)        //对应正转
 	{
 		__HAL_TIM_SetCompare(&htim8, TIM_CHANNEL_1, (uint32_t)motor1.pid.output);
-		IN1(0);
-		IN2(1);
+		IN1(1);
+		IN2(0);
 	}
 	else				  //对应反转					
 	{
 		__HAL_TIM_SetCompare(&htim8, TIM_CHANNEL_1, (uint32_t)(-motor1.pid.output));
-		IN1(1);
-		IN2(0);
+		IN1(0);
+		IN2(1);
 	}
 
 	if(output2 > 0)        //对应正转

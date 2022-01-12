@@ -102,7 +102,7 @@ int main(void)
   Motor_Init(0, 0, 1.1597, 1.4916);
   PID_Init(&motor1.pid.inner,0.6,0.001,0.2,100,10000);
   PID_Init(&motor1.pid.outer,0.2,0.015,0.2,100,10000);
-  PID_Init(&motor2.pid.inner,0.2,0.015,0.2,100,10000);
+  PID_Init(&motor2.pid.inner,0.6,0.015,0.2,100,10000);
   PID_Init(&motor2.pid.outer,0.2,0.015,0.2,100,10000);
   printf("...");
   /* USER CODE END 2 */
@@ -115,7 +115,7 @@ int main(void)
     /* USER CODE END WHILE */
     sys_now_clock = HAL_GetTick();
     if(sys_now_clock - sys_old_clock >= 50){
-      Speed_Tset();
+      Speed_Tset2();
       sys_old_clock = HAL_GetTick();
     }
     /* USER CODE BEGIN 3 */
