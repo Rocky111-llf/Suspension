@@ -16,11 +16,11 @@ typedef struct _AnglePID
 {
 	PID inner;
 	PID outer;
-	uint32_t output;
+	float output;
 
 }AnglePID;
 
 void PID_Init(PID *pid,float p,float i,float d,float maxI,float maxOut);
 void PID_SingleCalc(PID *pid,float reference,float feedback);
-void PID_AngleCalc(AnglePID *pid, uint32_t target_angle, uint32_t total_angle, uint32_t speed);
+void PID_AngleCalc(AnglePID *pid, float target_angle, int32_t total_angle, uint32_t speed);
 #endif

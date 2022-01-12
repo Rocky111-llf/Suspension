@@ -32,7 +32,7 @@ void PID_SingleCalc(PID *pid,float reference,float feedback)
 	pid->lastError = pid->error;                              //更新上一次的误差
 }
 //串级PID计算
-void PID_AngleCalc(AnglePID *pid, uint32_t target_angle, uint32_t total_angle, uint32_t speed){
+void PID_AngleCalc(AnglePID *pid, float target_angle, int32_t total_angle, uint32_t speed){
 	PID_SingleCalc(&pid->outer, target_angle, total_angle);
 	PID_SingleCalc(&pid->inner, pid->outer.output, speed);
 	pid->output = pid->inner.output;

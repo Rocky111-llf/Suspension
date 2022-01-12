@@ -100,25 +100,26 @@ int main(void)
   PWM_Encoder_Start();
   Enable_Uart_O_Control(&huart1,&uart_1);
   Motor_Init(0, 0, 1.1597, 1.4916);
-  PID_Init(&motor1.pid.inner,0.6,0.001,0.2,100,10000);
-  PID_Init(&motor1.pid.outer,0.2,0.015,0.2,100,10000);
-  PID_Init(&motor2.pid.inner,0.6,0.015,0.2,100,10000);
-  PID_Init(&motor2.pid.outer,0.2,0.015,0.2,100,10000);
+  PID_Init(&motor1.pid.inner,5.1,0.258,0,100,1000);
+  PID_Init(&motor1.pid.outer,0.3,0,0.2,100,1000);
+  PID_Init(&motor2.pid.inner,5.1,0.258,0,100,1000);
+  PID_Init(&motor2.pid.outer,0.3,0,0.2,100,1000);
   printf("...");
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   //Line_Control(0.5, 0.5);
+  //motor1.targetAngle = motor1.totalAngle;
   while (1)
   {
-    /* USER CODE END WHILE */
     sys_now_clock = HAL_GetTick();
     if(sys_now_clock - sys_old_clock >= 40){
-      Speed_Tset1();
-      Speed_Tset2();
+      Angle_Test1();
       sys_old_clock = HAL_GetTick();
     }
+    /* USER CODE END WHILE */
+
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
